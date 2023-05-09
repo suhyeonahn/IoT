@@ -1,0 +1,50 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+
+Vagrant.configure("2") do |config|
+
+	config.vm.boot_timeout = 1800
+	config.ssh.insert_key = true
+
+	SERVER_IP="192.168.56.110"
+	AGENT_IP="192.168.56.111"
+	SERVER_NAME="suahnS"
+	AGENT_NAME="suahnSW"
+	K3S_TOKEN="/var/lib/rancher/k3s/server/node-token"
+	K3S_TOKEN_CP="/vagrant/node-token"
+	FLAGS="--tls-san #{SERVER_IP} --node-external-ip #{SERVER_IP}"
+	config.vm.define "#{SERVER_NAME}" do |server|
+		server.vm.box = "ubuntu/focal64"
+		server.vm.hostname = "#{SERVER_NAME}"
+    		server.vm.network "private_network", ip: "#{SERVER_IP}"
+		server.vm.provider "virtualbox" do |vb|
+      		vb.memory = "2048"
+      		vb.cpus = "2"
+		end
+		server.vm.provision "shell", inline: <<-SHELL
+			sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install curl -y && sudo apt-get install net-tools -y
+			sudo curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--node-ip=#{SERVER_IP} --tls-san=#{SERVER_IP}" K3S_KUBECONFIG_MODE="644" sh -
+			sudo chmod -R 755 /vagrant
+			cp "#{K3S_TOKEN}" "#{K3S_TOKEN_CP}"
+		SHELL
+	end
+	
+	config.vm.define "#{AGENT_NAME}" do |agent|
+		agent.vm.box = "ubuntu/focal64"
+		agent.vm.hostname = "#{AGENT_NAME}"
+   		agent.vm.network "private_network", ip: "#{AGENT_IP}"
+		agent.vm.provider "virtualbox" do |vb|
+      		vb.memory = "1024"
+      		vb.cpus = "2"
+		end
+		agent.vm.provision "shell", inline: <<-SHELL
+			sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install curl -y && sudo apt-get install net-tools -y
+			sudo curl -sfL https://get.k3s.io | K3S_URL=https://192.168.56.110:6443 K3S_TOKEN="$(< #{K3S_TOKEN_CP})" INSTALL_K3S_EXEC="--node-ip=#{AGENT_IP} eth1" sh -
+		SHELL
+	end
+end

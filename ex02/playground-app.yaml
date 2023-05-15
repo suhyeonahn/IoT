@@ -1,0 +1,16 @@
+kind: Application
+metadata:
+  name: playground
+spec:
+  destination:
+    namespace: dev
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    repoURL: https://github.com/suhyeonahn/argo-playground.git
+    targetRevision: HEAD
+    path: .
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

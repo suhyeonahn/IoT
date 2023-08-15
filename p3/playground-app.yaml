@@ -7,7 +7,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   project: default
   source:
-    repoURL: https://github.com/suhyeonahn/argo-playground.git
+    repoURL: https://github.com/suhyeonahn/suahn-argo-playground.git
     targetRevision: HEAD
     path: .
   syncPolicy:

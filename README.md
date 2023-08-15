@@ -16,3 +16,7 @@ https://computingforgeeks.com/install-mirantis-cri-dockerd-as-docker-engine-shim
     k3s and k3d are both lightweight alternatives to standard Kubernetes deployments, but they serve slightly different purposes and are intended for different use cases.
     K3s is a lightweight Kubernetes distribution optimized for resource-constrained environments, edge computing, and production scenarios where operational simplicity and minimal resource usage are priorities.
     k3d is a tool for quickly creating lightweight Kubernetes clusters using Docker containers. It's primarily designed for development and testing, allowing you to easily create isolated Kubernetes environments on your local machine.
+
+- algo CD :
+    Argo CD is an open-source declarative GitOps continuous delivery tool designed to automate the deployment of applications to Kubernetes clusters. GitOps is a methodology that utilizes Git repositories as the single source of truth for defining and managing the desired state of applications and infrastructure.
+    Argo CD works by synchronizing the actual state of the target Kubernetes cluster with the desired state specified in a Git repository. This desired state is defined using Kubernetes manifests, which are YAML or JSON files describing the configuration of applications, services, and other resources within the cluster.
